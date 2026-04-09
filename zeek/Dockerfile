@@ -12,8 +12,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends tini \
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENV PATH="/opt/zeek/bin:${PATH}"
-
 USER netwatch
 WORKDIR /logs
 

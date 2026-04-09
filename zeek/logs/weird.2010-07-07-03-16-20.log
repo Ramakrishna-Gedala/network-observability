@@ -1,0 +1,7 @@
+{"ts":1278472580.566743,"name":"truncated_IP_len","notice":false,"peer":"zeek","source":"IP"}
+{"ts":1278472580.567476,"id.orig_h":"10.34.0.1","id.orig_p":0,"id.resp_h":"10.31.0.1","id.resp_p":0,"name":"bad_IP_checksum","notice":false,"peer":"zeek","source":"IP"}
+{"ts":1278472580.66677,"id.orig_h":"235.247.89.226","id.orig_p":0,"id.resp_h":"224.0.0.1","id.resp_p":0,"name":"bad_IP_checksum","notice":false,"peer":"zeek","source":"IP"}
+{"ts":1278472580.748796,"uid":"CPPPgP1fU5rStSEMzd","id.orig_h":"172.16.11.12","id.orig_p":64581,"id.resp_h":"216.34.181.45","id.resp_p":80,"name":"bad_TCP_checksum","notice":false,"peer":"zeek","source":"TCP"}
+{"ts":1278472580.92816,"uid":"CUMR784cCGWjYwGs14","id.orig_h":"172.16.11.12","id.orig_p":59368,"id.resp_h":"172.16.11.1","id.resp_p":53,"name":"bad_UDP_checksum","notice":false,"peer":"zeek","source":"UDP"}
+{"ts":1278472580.971576,"uid":"CERyDNcS5jENjA3Mb","id.orig_h":"2001:4958:15a0:24:c1b3:b766:7fff:d0b3","id.orig_p":43250,"id.resp_h":"2606:4700::6812:69c","id.resp_p":80,"name":"bad_TCP_checksum","notice":false,"peer":"zeek","source":"TCP"}
+{"ts":1278472581.941492,"name":"unknown_ip_version","notice":false,"peer":"zeek","source":"IP"}
