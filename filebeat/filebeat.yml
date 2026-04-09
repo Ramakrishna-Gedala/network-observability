@@ -1,0 +1,72 @@
+filebeat.inputs:
+  - type: filestream
+    id: zeek-conn
+    paths:
+      - /zeek/logs/conn.log
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          overwrite_keys: true
+          add_error_key: true
+    fields:
+      log_type: conn
+    fields_under_root: true
+    scan_frequency: 5s
+    close_inactive: 30s
+
+  - type: filestream
+    id: zeek-dns
+    paths:
+      - /zeek/logs/dns.log
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          overwrite_keys: true
+          add_error_key: true
+    fields:
+      log_type: dns
+    fields_under_root: true
+    scan_frequency: 5s
+    close_inactive: 30s
+
+  - type: filestream
+    id: zeek-http
+    paths:
+      - /zeek/logs/http.log
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          overwrite_keys: true
+          add_error_key: true
+    fields:
+      log_type: http
+    fields_under_root: true
+    scan_frequency: 5s
+    close_inactive: 30s
+
+processors:
+  - drop_fields:
+      fields: ["agent", "ecs", "input", "log.offset"]
+      ignore_missing: true
+  - timestamp:
+      field: ts
+      layouts:
+        - "2006-01-02T15:04:05.000000Z"
+        - "2006-01-02T15:04:05Z"
+      target_field: "@timestamp"
+      ignore_missing: true
+      ignore_failure: true
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "zeek-%{[log_type]}"
+  partition.round_robin:
+    reachable_only: true
+  required_acks: 1
+  compression: gzip
+  codec.json:
+    pretty: false
+    escape_html: false
+
+logging.level: info
+logging.to_stderr: true

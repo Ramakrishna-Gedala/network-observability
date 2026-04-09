@@ -1,0 +1,95 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: netwatch-alerts
+    folder: NetWatch
+    interval: 1m
+    rules:
+
+      - uid: netwatch-high-volume
+        title: High Volume IP Detected
+        condition: C
+        data:
+          - refId: A
+            datasourceUid: netwatch-opensearch
+            relativeTimeRange: { from: 300, to: 0 }
+            model:
+              query: "alert_type:high_volume AND severity:high"
+              database: "netwatch-alerts"
+              metrics: [ { "type": "count", "id": "1" } ]
+              bucketAggs: [
+                { "type": "date_histogram", "field": "@timestamp", "id": "2", "settings": { "interval": "1m" } }
+              ]
+          - refId: C
+            datasourceUid: "-100"
+            model:
+              type: threshold
+              conditions:
+                - evaluator: { type: gt, params: [0] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: sum, params: [] }
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: High Volume IP Detected
+          description: "One or more IPs exceeded request threshold. Check netwatch-alerts index."
+
+      - uid: netwatch-port-scan
+        title: Port Scan Detected
+        condition: C
+        data:
+          - refId: A
+            datasourceUid: netwatch-opensearch
+            relativeTimeRange: { from: 600, to: 0 }
+            model:
+              query: "alert_type:port_scan"
+              database: "netwatch-alerts"
+              metrics: [ { "type": "count", "id": "1" } ]
+              bucketAggs: [
+                { "type": "date_histogram", "field": "@timestamp", "id": "2", "settings": { "interval": "1m" } }
+              ]
+          - refId: C
+            datasourceUid: "-100"
+            model:
+              type: threshold
+              conditions:
+                - evaluator: { type: gt, params: [0] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: sum, params: [] }
+        for: 1m
+        labels: { severity: high }
+        annotations:
+          summary: Port Scan Detected
+          description: "Horizontal port-scan pattern detected in last 10 minutes."
+
+      - uid: netwatch-dns-tunneling
+        title: DNS Tunneling Pattern Detected
+        condition: C
+        data:
+          - refId: A
+            datasourceUid: netwatch-opensearch
+            relativeTimeRange: { from: 900, to: 0 }
+            model:
+              query: "alert_type:dns_tunneling_suspect"
+              database: "netwatch-alerts"
+              metrics: [ { "type": "count", "id": "1" } ]
+              bucketAggs: [
+                { "type": "date_histogram", "field": "@timestamp", "id": "2", "settings": { "interval": "1m" } }
+              ]
+          - refId: C
+            datasourceUid: "-100"
+            model:
+              type: threshold
+              conditions:
+                - evaluator: { type: gt, params: [3] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: sum, params: [] }
+        for: 2m
+        labels: { severity: medium }
+        annotations:
+          summary: DNS Tunneling Pattern Detected
+          description: "More than 3 suspected DNS tunneling events in the last 15 minutes."

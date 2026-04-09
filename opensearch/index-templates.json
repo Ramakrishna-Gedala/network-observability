@@ -1,0 +1,90 @@
+{
+  "netwatch-conn": {
+    "index_patterns": ["netwatch-conn-*"],
+    "template": {
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      },
+      "mappings": {
+        "dynamic": "strict",
+        "properties": {
+          "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
+          "@timestamp": { "type": "date" },
+          "uid": { "type": "keyword" },
+          "src_ip": { "type": "ip" },
+          "dst_ip": { "type": "ip" },
+          "src_port": { "type": "integer" },
+          "dst_port": { "type": "integer" },
+          "proto": { "type": "keyword" },
+          "service": { "type": "keyword" },
+          "duration": { "type": "float" },
+          "bytes_sent": { "type": "long" },
+          "bytes_recv": { "type": "long" },
+          "conn_state": { "type": "keyword" },
+          "ip_classification": { "type": "keyword" },
+          "alert_type": { "type": "keyword" }
+        }
+      }
+    }
+  },
+
+  "netwatch-dns": {
+    "index_patterns": ["netwatch-dns-*"],
+    "template": {
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      },
+      "mappings": {
+        "dynamic": "strict",
+        "properties": {
+          "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
+          "@timestamp": { "type": "date" },
+          "uid": { "type": "keyword" },
+          "src_ip": { "type": "ip" },
+          "query": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword", "ignore_above": 512 } }
+          },
+          "qtype_name": { "type": "keyword" },
+          "answers": { "type": "keyword" },
+          "rtt": { "type": "float" },
+          "ip_classification": { "type": "keyword" },
+          "alert_type": { "type": "keyword" }
+        }
+      }
+    }
+  },
+
+  "netwatch-http": {
+    "index_patterns": ["netwatch-http-*"],
+    "template": {
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      },
+      "mappings": {
+        "dynamic": "strict",
+        "properties": {
+          "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
+          "@timestamp": { "type": "date" },
+          "uid": { "type": "keyword" },
+          "src_ip": { "type": "ip" },
+          "dst_ip": { "type": "ip" },
+          "method": { "type": "keyword" },
+          "host": { "type": "keyword" },
+          "uri": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword", "ignore_above": 1024 } }
+          },
+          "status_code": { "type": "integer" },
+          "response_body_len": { "type": "long" },
+          "user_agent": { "type": "text" },
+          "ip_classification": { "type": "keyword" },
+          "alert_type": { "type": "keyword" }
+        }
+      }
+    }
+  }
+}

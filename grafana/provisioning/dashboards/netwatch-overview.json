@@ -1,0 +1,172 @@
+{
+  "title": "NetWatch Overview",
+  "uid": "netwatch-overview",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "tags": ["netwatch"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Traffic Volume Over Time",
+      "type": "timeseries",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "timeField": "@timestamp",
+          "bucketAggs": [
+            { "type": "date_histogram", "field": "@timestamp", "id": "2", "settings": { "interval": "1m" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Top 10 Source IPs",
+      "type": "bargauge",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "bucketAggs": [
+            { "type": "terms", "field": "src_ip", "id": "2", "settings": { "order": "desc", "orderBy": "_count", "size": "10" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Top 10 Destination Ports",
+      "type": "piechart",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "bucketAggs": [
+            { "type": "terms", "field": "dst_port", "id": "2", "settings": { "size": "10" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "DNS Query Volume",
+      "type": "timeseries",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "alias": "{{qtype_name.keyword}}",
+          "database": "netwatch-dns-*",
+          "bucketAggs": [
+            { "type": "terms", "field": "qtype_name", "id": "3", "settings": { "size": "10" } },
+            { "type": "date_histogram", "field": "@timestamp", "id": "2", "settings": { "interval": "1m" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "HTTP Status Code Distribution",
+      "type": "barchart",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "status_code:(200 OR 301 OR 302 OR 400 OR 403 OR 404 OR 500 OR 503)",
+          "database": "netwatch-http-*",
+          "bucketAggs": [
+            { "type": "terms", "field": "status_code", "id": "2", "settings": { "size": "10" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Active Alerts",
+      "type": "table",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "database": "netwatch-alerts",
+          "metrics": [ { "type": "raw_document", "id": "1", "settings": { "size": "50" } } ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "severity" },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "medium": { "color": "yellow", "index": 0 } } },
+                  { "type": "value", "options": { "high": { "color": "red", "index": 1 } } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "title": "Protocol Breakdown",
+      "type": "piechart",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "*",
+          "bucketAggs": [
+            { "type": "terms", "field": "proto", "id": "2", "settings": { "size": "10" } }
+          ],
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Internal vs External Traffic",
+      "type": "stat",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "netwatch-opensearch" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "targets": [
+        {
+          "refId": "A",
+          "alias": "internal",
+          "query": "ip_classification:internal",
+          "metrics": [ { "type": "count", "id": "1" } ]
+        },
+        {
+          "refId": "B",
+          "alias": "external",
+          "query": "ip_classification:external",
+          "metrics": [ { "type": "count", "id": "1" } ]
+        }
+      ]
+    }
+  ]
+}
