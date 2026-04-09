@@ -33,7 +33,11 @@ class BaseConsumer(ABC):
                 "bootstrap.servers": bootstrap_servers,
                 "group.id": self.group_id,
                 "enable.auto.commit": False,
-                "auto.offset.reset": "latest",
+                # `earliest` so a freshly-started processor picks up events that
+                # Filebeat already shipped to Kafka before the processor was ready.
+                # `latest` would silently skip them, which is the most common
+                # "Kafka has data but OpenSearch is empty" footgun.
+                "auto.offset.reset": "earliest",
                 "session.timeout.ms": 10_000,
             }
         )

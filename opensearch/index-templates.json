@@ -7,7 +7,7 @@
         "number_of_replicas": 0
       },
       "mappings": {
-        "dynamic": "strict",
+        "dynamic": false,
         "properties": {
           "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
           "@timestamp": { "type": "date" },
@@ -37,7 +37,7 @@
         "number_of_replicas": 0
       },
       "mappings": {
-        "dynamic": "strict",
+        "dynamic": false,
         "properties": {
           "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
           "@timestamp": { "type": "date" },
@@ -65,7 +65,7 @@
         "number_of_replicas": 0
       },
       "mappings": {
-        "dynamic": "strict",
+        "dynamic": false,
         "properties": {
           "ts": { "type": "date", "format": "epoch_second||strict_date_optional_time" },
           "@timestamp": { "type": "date" },
