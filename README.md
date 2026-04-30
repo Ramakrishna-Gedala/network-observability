@@ -1,6 +1,18 @@
 # Network Observability Platform (Zeek + Kafka + OpenTelemetry + Grafana) | NetWatch
 
-NetWatch is an end-to-end, Dockerized network observability stack: Zeek captures traffic, Kafka buffers it, a Python/FastAPI processor enriches and scores every event, OpenSearch stores it, and Grafana + a React operator dashboard visualize it.
+This project demonstrates a **production-grade network observability system** that captures, processes, and visualizes network telemetry (logs, flows, and events) in real time.
+
+It uses:
+- Zeek for network traffic monitoring
+- Kafka for streaming pipeline
+- Python (FastAPI) for processing and enrichment
+- OpenSearch for storage and search
+- OpenTelemetry for metrics
+- Grafana for dashboards and alerting
+
+This project simulates a **real-world observability pipeline used in modern cloud and security systems**.
+
+It is an end-to-end, Dockerized network observability stack: Zeek captures traffic, Kafka buffers it, a Python/FastAPI processor enriches and scores every event, OpenSearch stores it, and Grafana + a React operator dashboard visualize it.
 
 > 👋 **New here? Read [docs/LEARN.md](docs/LEARN.md) first.** It's a 30-minute end-to-end walkthrough of every component, what it does, why it exists, and how to follow a single packet through the entire pipeline. This README is the operator runbook; LEARN.md is the project tour.
 
