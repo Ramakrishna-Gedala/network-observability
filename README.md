@@ -1,4 +1,4 @@
-# NetWatch — Network Observability Platform
+# Network Observability Platform (Zeek + Kafka + OpenTelemetry + Grafana) | NetWatch
 
 NetWatch is an end-to-end, Dockerized network observability stack: Zeek captures traffic, Kafka buffers it, a Python/FastAPI processor enriches and scores every event, OpenSearch stores it, and Grafana + a React operator dashboard visualize it.
 
