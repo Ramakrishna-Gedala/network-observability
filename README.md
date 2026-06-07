@@ -1,20 +1,24 @@
 # Network Observability Platform (Zeek + Kafka + OpenTelemetry + Grafana) | NetWatch
 
-This project demonstrates a **production-grade network observability system** that captures, processes, and visualizes network telemetry (logs, flows, and events) in real time.
+## Real-time network security monitoring, threat detection, and traffic analysis pipeline
 
-It uses:
-- Zeek for network traffic monitoring
-- Kafka for streaming pipeline
-- Python (FastAPI) for processing and enrichment
-- OpenSearch for storage and search
-- OpenTelemetry for metrics
-- Grafana for dashboards and alerting
+A **production-grade network observability platform** that captures live network traffic, processes it through a streaming pipeline, detects threats in real time, and visualizes everything on operator dashboards — built for engineers learning **network security monitoring, intrusion detection systems (IDS), and security observability**.
 
-This project simulates a **real-world observability pipeline used in modern cloud and security systems**.
+![Network Observability Platform — Zeek IDS + Kafka + OpenSearch + Grafana](docs/assets/network-observability-zeek-kafka-opensearch-grafana.png)
 
-It is an end-to-end, Dockerized network observability stack: Zeek captures traffic, Kafka buffers it, a Python/FastAPI processor enriches and scores every event, OpenSearch stores it, and Grafana + a React operator dashboard visualize it.
+### Why this project?
 
-> 👋 **New here? Read [docs/LEARN.md](docs/LEARN.md) first.** It's a 30-minute end-to-end walkthrough of every component, what it does, why it exists, and how to follow a single packet through the entire pipeline. This README is the operator runbook; LEARN.md is the project tour.
+Modern security teams need **full-stack observability pipelines** — not just packet capture, but enrichment, correlation, and alerting. This project implements the same architecture used in production **SIEM and network detection & response (NDR)** systems:
+
+- **Zeek IDS** — network traffic analysis and protocol logging
+- **Apache Kafka** — real-time event streaming and buffering
+- **Python/FastAPI** — event enrichment, threat scoring, and anomaly detection
+- **OpenSearch** — full-text search and log analytics at scale
+- **OpenTelemetry** — metrics collection and export
+- **Grafana** — dashboards, alerting, and security analytics visualization
+- **React** — operator control dashboard
+
+> **New here? Read [docs/LEARN.md](docs/LEARN.md) first.** It's a 30-minute end-to-end walkthrough of every component, what it does, why it exists, and how to follow a single packet through the entire pipeline. This README is the operator runbook; LEARN.md is the project tour.
 
 ## Architecture
 
@@ -528,7 +532,7 @@ make reset           # full rebuild from scratch
 
 ---
 
-## 8. Pipeline overview
+## 9. Pipeline overview
 
 1. **Zeek** watches a live interface (or replays `capture.pcap`) and produces `conn.log`, `dns.log`, `http.log`, `ssl.log` as JSON.
 2. **Filebeat** tails those files and publishes each line to a per-protocol Kafka topic (`zeek-conn`, `zeek-dns`, `zeek-http`).
@@ -541,7 +545,7 @@ See [docs/LEARN.md](docs/LEARN.md) for the full walkthrough, [docs/ARCHITECTURE.
 
 ---
 
-## 9. Adding a new detector
+## 10. Adding a new detector
 
 1. Create a class in [python-processor/detectors/](python-processor/detectors/) that inherits from [`BaseDetector`](python-processor/detectors/base_detector.py) and implements `inspect(event) -> list[dict]`.
 2. Export it from [python-processor/detectors/__init__.py](python-processor/detectors/__init__.py).
