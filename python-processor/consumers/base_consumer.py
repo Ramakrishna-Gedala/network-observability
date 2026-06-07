@@ -76,9 +76,10 @@ class BaseConsumer(ABC):
                 await asyncio.sleep(0.5)
                 continue
 
-            msg = self._consumer.poll(0.5)
+            # Run the blocking C-level poll() in a thread so the asyncio
+            # event loop stays free for FastAPI to serve HTTP requests.
+            msg = await loop.run_in_executor(None, self._consumer.poll, 0.5)
             if msg is None:
-                await asyncio.sleep(0)
                 continue
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
@@ -91,7 +92,7 @@ class BaseConsumer(ABC):
             except json.JSONDecodeError as exc:
                 log.error("bad_json", topic=self.topic, error=str(exc))
                 OtelExporter.record_processed(self.topic, "bad_json")
-                self._consumer.commit(msg, asynchronous=False)
+                await loop.run_in_executor(None, self._consumer.commit, msg)
                 continue
 
             await self._process_with_retry(event, msg)
@@ -100,11 +101,12 @@ class BaseConsumer(ABC):
         self._consumer.close()
 
     async def _process_with_retry(self, event: dict[str, Any], msg) -> None:  # type: ignore[no-untyped-def]
+        loop = asyncio.get_running_loop()
         for attempt in range(1, MAX_RETRIES + 1):
             try:
                 await self.process(event)
                 OtelExporter.record_processed(self.topic, "ok")
-                self._consumer.commit(msg, asynchronous=False)
+                await loop.run_in_executor(None, self._consumer.commit, msg)
                 return
             except Exception as exc:  # noqa: BLE001
                 log.warning(
@@ -124,6 +126,6 @@ class BaseConsumer(ABC):
                             "severity": "high",
                         }
                     )
-                    self._consumer.commit(msg, asynchronous=False)
+                    await loop.run_in_executor(None, self._consumer.commit, msg)
                     return
                 await asyncio.sleep(0.5 * attempt)
